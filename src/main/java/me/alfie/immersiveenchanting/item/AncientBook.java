@@ -16,6 +16,9 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class AncientBook extends Item {
@@ -31,10 +34,6 @@ public class AncientBook extends Item {
         return true;
     }
 
-    /**
-     *  Called in ItemStack.mixin
-     *  creates a tooltip for Ancient Books that reflects the kinds of enchantments it has
-    */
     public static void makeTooltip(ItemStack stack, Consumer<Component> componentOps) {
         ItemEnchantments enchantments = stack.get(DataComponents.STORED_ENCHANTMENTS);
 
@@ -65,7 +64,7 @@ public class AncientBook extends Item {
                 .append(holder.value().description());
         componentOps.accept(component.withStyle(ChatFormatting.GOLD));
 
-        tooltipPost(enchantData, holder, componentOps, false);
+        garnish(enchantData, holder, componentOps, false);
     }
 
     private static void forMultipleEnchantments(ItemEnchantments enchantData, Consumer<Component> componentOps) {
@@ -77,14 +76,11 @@ public class AncientBook extends Item {
                     .append(holder.value().description());
             componentOps.accept(component.withStyle(ChatFormatting.GOLD));
 
-            tooltipPost(enchantData, holder, componentOps, true);
+            garnish(enchantData, holder, componentOps, true);
         }
     }
 
-    /**
-     * Adds post-enchantments info to tooltip like the mod added tooltip and enchantment description compat
-    */
-    private static void tooltipPost(ItemEnchantments enchantData, Holder<Enchantment> holder, Consumer<Component> componentOps, boolean addSpace) {
+    private static void garnish(ItemEnchantments enchantData, Holder<Enchantment> holder, Consumer<Component> componentOps, boolean addSpace) {
         if (ClientConfig.isShowAddedByTooltipEnabled()) {
             String modName = ImmersiveEnchanting.getModName(holder.getKey()
                     .location()
